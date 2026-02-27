@@ -1,5 +1,7 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
 
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  // Replace <username> and <repo-name> with your actual GitHub details
+  site: 'https://daksh-dangi.github.io',
+  base: '/effective-broccoli', 
+});

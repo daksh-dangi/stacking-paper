@@ -1,17 +1,69 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Stackin Paper | ML Research Portfolio">
+  <main class="max-w-4xl mx-auto px-6 py-12 font-sans text-slate-900">
+    <header class="mb-12">
+      <h1 class="text-5xl font-black tracking-tighter mb-4 text-slate-900">
+        STACKIN PAPER: <span class="text-blue-600">BUILDING ON ML RESEARCH</span>
+      </h1>
+      
+      <div class="flex gap-2 mb-8">
+        <img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python" />
+        <img src="https://img.shields.io/badge/PyTorch-2.0+-EE4C2C.svg" alt="PyTorch" />
+        <img src="https://img.shields.io/badge/Status-Active_Research-success.svg" alt="Status" />
+      </div>
+
+      <p class="text-xl leading-relaxed text-slate-700">
+        Welcome to <strong>Stacking Paper(s)</strong>! This is my personal playground for breaking down the latest machine learning research papers, implementing them from scratch, and bridging the gap between intertwining topics—all while documenting my findings along the way.
+      </p>
+    </header>
+
+    <section class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-12 italic text-slate-700">
+      "Rather than just posting finished code, I use this space to write articles detailing my implementation struggles, architectural decisions, and the 'gotchas' that aren't mentioned in the original papers."
+    </section>
+
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold mb-6 border-b pb-2">🗂️ Research Logs</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-100">
+              <th class="p-3 border">Date</th>
+              <th class="p-3 border">Paper / Topic</th>
+              <th class="p-3 border">Key Concepts</th>
+              <th class="p-3 border">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="p-3 border font-bold">Feb 2026</td>
+              <td class="p-3 border italic">Verifiable Reward RL</td>
+              <td class="p-3 border text-sm text-slate-600">GRPO, LLM-as-a-Judge</td>
+              <td class="p-3 border text-blue-600 font-semibold"><a href="/projects">View Project</a></td>
+            </tr>
+            <tr class="text-slate-400">
+              <td class="p-3 border italic">Upcoming</td>
+              <td class="p-3 border">DeepSeek-R1 Distillation</td>
+              <td class="p-3 border text-sm">RLHF, KD</td>
+              <td class="p-3 border italic">WIP</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold mb-6 border-b pb-2">🏗️ Repository Structure</h2>
+      <pre class="bg-slate-900 text-slate-100 p-6 rounded-lg font-mono text-sm overflow-x-auto">
+the-paper-trail/
+├── shared_utils/         &lt;- Custom loaders &amp; metrics
+├── 2026_GRPO_Dataset/    &lt;- Project Folder
+│   ├── README.md         &lt;- 📝 The article/notes
+│   ├── requirements.txt  &lt;- ⚙️ Isolated deps
+│   └── src/              &lt;- 💻 Implementation code
+└── ...</pre>
+    </section>
+  </main>
+</Layout>
