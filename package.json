@@ -1,18 +1,18 @@
 {
-  "name": "stackin-paper",
+  "name": "effective-broccoli",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "mkdir -p src/data && node scripts/fetch-projects.mjs && astro build",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/tailwind": "^6.0.2",
-    "@tailwindcss/vite": "^4.2.1",
-    "astro": "^5.17.1",
-    "tailwindcss": "^4.2.1"
-  }
+    "@astrojs/tailwind": "^5.1.0",
+    "@tailwindcss/postcss": "^4.0.0", 
+    "astro": "^5.0.0",
+    "tailwindcss": "^4.0.0"
+    }
 }
