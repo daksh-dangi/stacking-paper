@@ -1,7 +1,8 @@
 import { defineConfig } from 'astro/config';
+import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
-  // Replace <username> and <repo-name> with your actual GitHub details
   site: 'https://daksh-dangi.github.io',
-  base: '/effective-broccoli', 
+  base: '/effective-broccoli',
+  integrations: [tailwind()],
 });
