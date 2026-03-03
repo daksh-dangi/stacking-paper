@@ -1,0 +1,99 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href=`${base}/favicon.svg` />
+		<title>{title}</title>
+		<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+	</head>
+	<body class="bg-slate-50 font-sans selection:bg-blue-200">
+		
+		<nav class="sticky top-0 z-50 w-full h-20" style="background: linear-gradient(to bottom, #e0f2fe 0%, #e0f2fe 60%, #e8f5e4 100%);">
+			<div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+				
+				<div class="flex items-center gap-4">
+					<div id="header-stack" class="relative w-8 h-8 flex items-end overflow-hidden">
+						<div class="absolute bottom-[2px] w-full h-[1px] bg-slate-400/30"></div>
+						<div class="absolute bottom-[4px] w-full h-[1px] bg-slate-400/40"></div>
+						<div class="absolute bottom-[6px] w-full h-[1px] bg-slate-400/50"></div>
+						<div class="absolute bottom-[8px] w-full h-[1px] bg-slate-400/60"></div>
+						
+						<div id="paper-1" class="absolute w-full h-[1px] bg-slate-500" style="transform: translateY(-40px); opacity: 0;"></div>
+						<div id="paper-2" class="absolute w-full h-[1px] bg-slate-500" style="transform: translateY(-40px); opacity: 0;"></div>
+					</div>
+
+					<a href=`${base}/` class="font-black tracking-tighter text-xl uppercase text-slate-800">STACKIN PAPER</a>
+				</div>
+
+				<div class="flex gap-8 font-mono text-sm font-bold uppercase text-slate-600">
+					<a href=`${base}/projects` class="hover:text-blue-600 transition-colors">/projects</a>
+					<a href=`${base}/articles` class="hover:text-blue-600 transition-colors">/articles</a>
+				</div>
+			</div>
+		</nav>
+
+		<main class="max-w-3xl mx-auto px-6 py-12">
+			<article class="prose prose-slate max-w-3xl mx-auto prose-h2:text-[#bdaa8b]">
+                <slot />
+            </article>
+		</main>
+
+		<script>
+			const p1 = document.getElementById('paper-1');
+			const p2 = document.getElementById('paper-2');
+			
+			let lastScrollY = window.scrollY;
+			let totalDelta = 0;
+
+			window.addEventListener('scroll', () => {
+				const currentScrollY = window.scrollY;
+				// Ensures papers always fall down by adding the absolute change in scroll
+				totalDelta += Math.abs(currentScrollY - lastScrollY);
+				lastScrollY = currentScrollY;
+
+				const loopDistance = 140; 
+				
+				// Calculate progress for two papers staggered by 50%
+				const progress1 = (totalDelta % loopDistance) / loopDistance;
+				const progress2 = ((totalDelta + (loopDistance / 2)) % loopDistance) / loopDistance;
+
+				const animate = (el, progress) => {
+					if (!el) return;
+					// Falling from top of container to the bottom stack
+					const y = -30 + (progress * 30);
+					// Quick fade in at top, fade out as it merges with the stack
+					const opacity = progress < 0.1 ? progress * 10 : (1 - progress) * 1.5;
+					
+					el.style.transform = `translateY(${y}px)`;
+					el.style.opacity = opacity.toString();
+				};
+
+				animate(p1, progress1);
+				animate(p2, progress2);
+			});
+		</script>
+	</body>
+</html>
+
+<style is:global>
+	@tailwind base;
+	@tailwind components;
+	@tailwind utilities;
+
+	html, body {
+		background-color: #e8f5e4 !important; 
+		margin: 0;
+		padding: 0;
+		min-height: 200vh;
+	}
+</style>

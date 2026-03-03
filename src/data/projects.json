@@ -1,12 +1,7 @@
 [
   {
-    "name": "SFDT",
-    "description": "Sequential Feature Domain Transfer for continual learning.",
-    "url": "https://github.com/daksh-dangi/dummy-repo/tree/main/sfdt"
-  },
-  {
-    "name": "GRPO",
-    "description": "Group Relative Policy Optimization on micro-datasets.",
-    "url": "https://github.com/daksh-dangi/dummy-repo/tree/main/grpo"
+    "name": "GRPO + GR",
+    "description": "Explicit Gradient Regularization within GRPO",
+    "url": "https://github.com/daksh-dangi/stackin-paper/tree/main/Gradient-Reg"
   }
 ]
