@@ -3,7 +3,7 @@ layout: ../../layouts/MarkdownLayout.astro
 title: "Dr. GRPO with Gradient Regularization"
 pubDate: "2026-02-26"
 description: "Exploring the impact of explicit Gradient Regularization"
-tags: ["Meta", "Setup"]
+tags: ["GRPO"]
 ---
 
 ## Methods Used
