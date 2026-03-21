@@ -5,6 +5,7 @@ pubDate: "2026-02-26"
 description: "Exploring the impact of explicit Gradient Regularization"
 tags: ["GRPO"]
 ---
+# Dr. GRPO with Gradient Regularization
 
 ## Methods Used
 For this project, I built a Dr.GRPO based RL pipeline - with an explicit Gradient Regularization implementation that has empirically been shown to outperform the implicit regularization incurred by the Kullback-Leibler Divergence through Reference Resets.

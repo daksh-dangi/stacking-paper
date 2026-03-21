@@ -10,8 +10,12 @@ import Layout from '../layouts/Layout.astro';
 		</h1>
 	</header>
 		
-	<p class="text-xl leading-relaxed text-slate-700 mb-8">
-		Welcome to <strong>Stackin Paper(s)</strong>! This is my personal playground for breaking down the latest machine learning research papers, implementing them from scratch, and bridging the gap between intertwined topics; all while documenting my findings along the way.
+	<p class="text-xl leading-relaxed text-slate-700 mb-4">
+		Welcome to <strong>Stackin Paper</strong>! This is my personal playground for breaking down the latest machine learning research papers, implementing them from scratch, and bridging the gap between intertwined topics; all while documenting my findings along the way.
+	</p>
+
+  <p class="text-xl leading-relaxed text-slate-700 mb-8">
+		I am particularly excited by, and aim to focus on, methodologies for enabling continual learning and long-horizon memory management. I feel very strongly towards these areas as I believe them to be fundamental limitations preventing the progression of LLMs beyond the current paradigm.
 	</p>
 
 
@@ -28,15 +32,15 @@ import Layout from '../layouts/Layout.astro';
 	</section>
 
 	<p class="text-xl leading-relaxed text-slate-700">
-		I have squandered much of my time in the pursuit of perfection; always planning, rarely executing. My hope with this venture is to change that. To embrace imperfection, and the rich trove of experiences that resides within the pitfalls of mistakes. 
+		I have squandered much of my time in the pursuit of perfection; always planning, rarely executing. I became so focused on ensuring that my first attempt was successful, that I never actaully got around to making an attempt in the first place.
 	</p>
 
   <p class="text-xl leading-relaxed text-slate-700 mt-4">
-		Over the course of this next chapter, I hope to make many, <i>many</i>, <b>many</b> mistakes. More importantly, I hope to use these mistakes as fuel to light the path for my future explorations !
+		My hope with this venture is to change that. To embrace imperfection, and the rich trove of experiences that resides within the pitfalls of mistakes. Over the course of this next chapter, I hope to make many, <i>many</i>, <b>many</b> mistakes. More importantly, I hope to use these mistakes as fuel to light the path for my future explorations !
 	</p>
 
   <p class="text-xl leading-relaxed text-slate-700 mt-4">
-    Consequently, through these future explorations, I aim to build a solid foundation for algorithmic and practical rigor; and gain insight on research taste. I have many opinions on what this topic of 'taste' truly entails, but I will leave that perhaps for a future article :)
+    Consequently, through these future explorations, I aim to build a solid foundation for algorithmic and practical rigor; and gain insight on research taste. I have many opinions on what this idea of 'taste' truly entails, but I will leave that perhaps for a future article :)
   </p>
 
     <section class="mt-12 mb-16">
@@ -55,30 +59,36 @@ import Layout from '../layouts/Layout.astro';
             <tr>
               <td class="p-3 border font-bold">Feb 2026</td>
               <td class="p-3 border italic">Gradient Regularization w/ DR.GRPO</td>
-              <td class="p-3 border text-sm text-slate-600">GRPO, Optimization</td>
-              <td class="p-3 border text-blue-600 font-semibold"><a href="/projects">View Project</a></td>
+              <td class="p-3 border text-sm text-slate-600">GRPO</td>
+              <td class="p-3 border text-blue-600 font-semibold"><a href="https://github.com/daksh-dangi/stackin-paper/tree/main/Gradient-Reg/src">View Project</a></td>
             </tr>
             <tr class="text-slate-400">
               <td class="p-3 border italic">Upcoming</td>
-              <td class="p-3 border">Experiential RL</td>
+              <td class="p-3 border">Experiential Reinforcement Learning</td>
               <td class="p-3 border text-sm">RL</td>
-              <td class="p-3 border italic">WIP</td>
+              <td class="p-3 border italic">Training</td>
+            </tr>
+            <tr class="text-slate-400">
+              <td class="p-3 border italic">Upcoming</td>
+              <td class="p-3 border">Writing context into memory via Gradient Descent</td>
+              <td class="p-3 border text-sm">Meta-Learning</td>
+              <td class="p-3 border italic">Being Imlemented</td>
+            </tr>
+            <tr class="text-slate-400">
+              <td class="p-3 border italic">Upcoming</td>
+              <td class="p-3 border">Residual Attention</td>
+              <td class="p-3 border text-sm">Attention Mechanism</td>
+              <td class="p-3 border italic">Being Imlemented</td>
+            </tr>
+            <tr class="text-slate-400">
+              <td class="p-3 border italic">Upcoming</td>
+              <td class="p-3 border">Memory Sparse Attention</td>
+              <td class="p-3 border text-sm">Attention Mechanism</td>
+              <td class="p-3 border italic">Being Imlemented</td>
             </tr>
           </tbody>
         </table>
       </div>
-    </section>
-
-    <section>
-      <h2 class="text-xl md:text-3xl text-[#bdaa8b] tracking-tight mt-6 mb-2 font-serif underline">🏗️ Repository Structure</h2>
-      <pre class="bg-slate-900 text-slate-100 p-6 rounded-lg font-mono text-sm overflow-x-auto">
-stackin-paper/
-├── shared_utils/         &lt;- Custom loaders &amp; metrics
-├── Gradient-Reg/    	  &lt;- Project Folder
-│   ├── README.md         &lt;- The article/notes
-│   ├── requirements.txt  &lt;- Isolated deps
-│   └── src/              &lt;- Implementation code
-└── ...</pre>
     </section>
 
 	<section>
@@ -87,7 +97,7 @@ stackin-paper/
 		I will try to be as transparent as possible regarding my usage of AI where relevant. While it can certainly be tempting to speed up progress and rely entirely on AI to implement these papers, my pursuit of imperfection leaves me seemingly orthogonal to this predisposition.
 	  </p>
 	  <p class="text-xl leading-relaxed text-slate-700 mb-4">
-	  	How can I learn, make mistakes, and be perfectly imperfect without touching upon the work myself ? The extent of my AI usage (unless specified otherwise, which I will explicitly do so where necessary) is to review & refine my conceptual understanding at the start of the project, and verify key implementation details at the end.
+	  	How can I learn, make mistakes, and be perfectly imperfect without touching upon the work myself ? The extent of my AI usage is to review & refine my conceptual understanding at the start of the project, and verify key implementation details at the end. I will do my best to point out if/where it's been used for other reasons in the articles.
 	  </p>
 	  <p class="text-xl leading-relaxed text-slate-700">
 		Well, that and also this entire website was coded using AI. I am not a frontend developer :)

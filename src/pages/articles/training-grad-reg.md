@@ -2,14 +2,15 @@
 layout: ../../layouts/MarkdownLayout.astro
 title: "Using Gradient Regularization to Train Qwen-4B"
 pubDate: "2026-03-21"
-description: "Discussing the hurdles faced during the training process"
-tags: ["Training", "trl", "vllm", "GRPO"]
+description: "Discussing hurdles during training, and displaying results"
+tags: ["Training", "trl"]
 ---
+# Using Gradient Regularization to Train Qwen-4B
 
 ## Beginning Training
 I wanted to approach the actual training part of this project in 2 steps. I am well aware that libraries such as trl exist for the sole purpose of optimizing every aspect of training runs. However, I felt like taking a hands-on approach would allow me to learn *even more* about what changes might be required to speed up training, and, more importantly, what *necessitates* these changes. For this reason, I opted to try running my training script bare-bones, built on just a custom PyTorch class; and then graduate to a custom instance of the trl GRPOTrainer class to hopefully smooth out all the wrinkles (inefficiencies) from my PyTorch implementation.
 
-### PyTorch Implementation
+## PyTorch Implementation
 I was **not** prepared for the rollercoaster that this first step alone would take me on. I chose Runpod as my Cloud provider of choice, and was quickly able to setup my environment and files + dataset for Qwen3-8B. That was, unfortunately, the extent of my smooth sailing experience. I was immediately hit with OOM galore - my *overly* optimistic initialization of group size=8, micro batch size=2, and max generation length=8192 was doomed from inception. It was like getting inspired by seeing somebody play DOOM on an ATM (no, really: https://www.youtube.com/watch?v=PW5ELKTivbE) and instead trying to run Warzone on it. I only wanted to fall to model quantization as a last resort, so I would be encouraged to learn what considerations are being implicitly handled in libraries like trl.
 
 After much finicking, I finally was able to get through **1** whole step without an OOM error ! Sadly, it was all in vain, as the sacrifices I made to even get through 1 step posed several glaring red flags. Primarily, my group size had to drop to 2, with a max generation length of 2000. For the complex science questions I was training the model on, 2000 tokens barely scratched the surface for the amount of reasoning required by the model to produce a conclusive answer. I only observed truncated generations in the logs which seemed to validate my suspicion. Furthermore, a group size of 2 is only marginally better than PPO, in that it doesn't fully enable the model to explore the question space. Finally, I had to reduce my micro batch to 1, which doubled the computation time .. not exactly optimal. I realized after that I could have probably kept the group size the same in this setup, as the micro batches would accumulate, but that would take 4x longer..
@@ -22,7 +23,7 @@ I knew that the reason optimizer states were stored in FP32 (and thus required s
 
 The last bit of vRAM saving that I was able to eke out came from a slight throughput tradeoff - using activation checkpointing. This frees up a lot of the memory overhead that is accumulated by storing each intermediate activation during the forward pass, by simply throwing it away. These activations would then need to be re-computed during the backwards pass, which is where the performance tradeoff kicks in. For me, it was slightly more important to ensure thorough exploration through a larger group size, which is why I opted for it in the end.
 
-### TRL Implementation
+## TRL Implementation
 Having gone through all that, I finally decided to switch to a trl based implementation. This would also allow me to leverage vLLM during the rollout generation for it's *massive* boost to throughput via PagedAttention and the other kernel optimizations the library has under the hood. Thankfully, trl has an *extensive* args list, so I was even able to disable the scaled rewards as mentioned in the Dr. GRPO paper with a single parameter, rather than manually updating the compute_loss function.
 
 This was, however, the point in the process where I made a pretty disastrous mistake. I monitored the logs for the first few steps, and confirmed that I wasn't facing any OOMs. Sleepy me decided this was good enough to leave running overnight while I caught some z's - crucially before I saw the initial logging metrics (which I had set to be every 10 steps). I woke up the next morning, pleasantly surprised and content with the fact that my run was still going and I hadn't faced any OOM errors overnight !
@@ -44,3 +45,12 @@ This lack of scaling gets further compounded in the next step - importance sampl
 The importance sampling term would be calculated using the new policy (after the gradient updates), and the old policy (the old/stale weights being used by the vLLM engine) - `pi_new / pi_old`. pi_new would be properly scaled as it is handled by trl, however, vLLM (as mentioned in the GitHub issue) does *not* scale the resulting pi_old logits when using a temperature value != 1, thus leading to the `sampling_logp_difference` exploding.
 
 To reconcile this difference, I just pass in `vllm_importance_sampling_correction=False` to the generation configs. This removes the  importance sampling calculation of the vLLM/trl sync from the loss, however it causes it's own host of issues involving bias - as we're computing the loss of the new policy using log probabilities from the old policy. Seeing as how incorporating the logp temperature change would require making changes to the vLLM engine itself (as the fix suggested in the GitHub issue was not compatible with my trl+vllm versions), I opt to accept this slight bias, rationalizing that the model is synched frequently enough for the bias to not compound extraordinarily.
+
+## Results & Future Steps
+Following these changes, I was **finally** able to observe a stable logging metric ! Determined not to make the same (costly) mistake as last time, I watched the training process steadily over the next couple of hours. Once I was satisfied that I had covered all the possible scenarios I could think of, I left it to run over the next 48 hours. Overall, the entire process of training the GradReg implementation and the baseline GRPO + all of the intermediate troubleshooting took ~ 1.5 weeks, and ~800$ of compute on 2x H200-SXM's.
+
+The training results seemed to be very positive. Across 3 trials on the GPQA Diamond dataset, the Gradient Regularized GRPO averaged 64.31%, while the baseline GRPO averaged 62.46% - almost a 2% increase ! I plan to delve deeper into the results by plotting the logging metrics, and testing the model's stability + plasticity by checking to see if it's retained knowledge from other domains. 
+
+More importantly, I will use this opportunity to try to get a taste of mechanistic interpretability ! It's a field that has fascinated me for a while, and I think this is the perfect scenario for me to give it a whirl. I will be able to (hopefully) get a clearer understanding of what exactly has been updated in the underlying circuits, and also attempt to see if the original Gradient Regularization paper's claims of generalizability hold. 
+
+This is probably easier said than done, but I find having a concrete objective when going into new fields allows you to focus your attention on specifics, rather than getting confused and lost by the breadth that the topic has to offer. In this scenario, I know what exactly I want to understand about the circuits, it's up to me to figure out how to extend the methodologies that I learn about to satiate my thirst for answers !
