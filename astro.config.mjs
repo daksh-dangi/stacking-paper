@@ -3,6 +3,6 @@ import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
   site: 'https://daksh-dangi.github.io',
-  base: '/effective-broccoli',
+  base: '/stacking-paper',
   integrations: [tailwind()],
 });
