@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 // Automatically find all markdown articles
 const posts = await Astro.glob('./articles/*.md');
 const sortedPosts = posts.sort((a, b) => 
-	new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime()
+	new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
 );
 ---
 
@@ -21,7 +21,7 @@ const sortedPosts = posts.sort((a, b) =>
 			{sortedPosts.map((post) => (
 				<article class="group relative">
 					<div class="flex items-baseline gap-4 mb-2">
-						<time class="font-mono text-xs text-slate-400">{post.frontmatter.pubDate}</time>
+						<time class="font-mono text-xs text-slate-400">{post.frontmatter.date}</time>
 						<div class="h-[1px] flex-grow bg-slate-200 group-hover:bg-blue-300 transition-colors"></div>
 					</div>
 					

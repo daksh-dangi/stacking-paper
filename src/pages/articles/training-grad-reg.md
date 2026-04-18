@@ -1,8 +1,9 @@
 ---
 layout: ../../layouts/MarkdownLayout.astro
 title: "Using Gradient Regularization to Train Qwen-4B"
-pubDate: "2026-03-21"
+date: "2026-03-21"
 description: "Discussing hurdles during training, and displaying results"
+project: "grpo"
 tags: ["Training", "trl"]
 ---
 # Using Gradient Regularization to Train Qwen-4B

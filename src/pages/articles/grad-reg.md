@@ -1,8 +1,9 @@
 ---
 layout: ../../layouts/MarkdownLayout.astro
 title: "Dr. GRPO with Gradient Regularization"
-pubDate: "2026-02-26"
-description: "Exploring the impact of explicit Gradient Regularization"
+date: "2026-02-26"
+description: "Implementing Dr. GRPO and Gradient Regularization from scratch"
+project: "grpo"
 tags: ["GRPO"]
 ---
 # Dr. GRPO with Gradient Regularization

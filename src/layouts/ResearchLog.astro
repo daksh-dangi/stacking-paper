@@ -1,0 +1,291 @@
+---
+import researchData from '../data/projects.json';
+
+const allArticles = await Astro.glob('../pages/articles/*.md');
+
+const projects = researchData.map(project => ({
+  ...project,
+  articles: allArticles
+    .filter(a => a.frontmatter.project === project.id)
+    .map(a => ({
+      date: a.frontmatter.date,
+      title: a.frontmatter.title,
+      description: a.frontmatter.description,
+      tags: a.frontmatter.tags || [],
+      url: a.url,  // Astro auto-generates the URL from the file path
+    }))
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+}));
+---
+
+<!-- Backdrop overlay (hidden by default, shown via JS on hover) -->
+<div id="card-backdrop" class="fixed inset-0 bg-black/0 pointer-events-none transition-colors duration-300 z-30"></div>
+
+<div class="max-w-4xl mx-auto px-6 pt-12 pb-[28rem]">
+  <h1 class="text-4xl md:text-5xl text-[#bdaa8b] tracking-tight font-serif mb-3">
+    Research Log
+  </h1>
+  <p class="font-mono text-sm text-slate-500 mb-6 leading-relaxed">Ongoing projects & their respective implementation notes, architecture decisions, and empirical findings from training and deployment.</p>
+  <div class="w-full h-[1px] bg-gray-300 mb-6"></div>
+
+  <div class="flex items-center justify-center gap-6 font-mono text-xs text-slate-400 mb-8">
+    <span class="flex items-center gap-1.5">🌱 <span>implementation stage</span></span>
+    <span class="flex items-center gap-1.5">🌿 <span>training in progress</span></span>
+    <span class="flex items-center gap-1.5">🌳 <span>evaluating results & writing up analysis</span></span>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative w-full">
+    {projects.map((project, index) => {
+      const isLeft = index % 2 === 0;
+      return (
+        <div class="research-card relative w-full z-10" style="height: 130px;">
+          {/* Expanding wrapper */}
+          <div 
+            class={`card-inner absolute top-0 flex overflow-hidden rounded-2xl bg-[#d6e8ed] transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group
+              ${isLeft ? 'left-0 flex-row origin-left' : 'right-0 flex-row-reverse origin-right'}
+            `}
+            style="width: 100%; height: 130px;"
+            data-side={isLeft ? 'left' : 'right'}
+          >
+            
+            {/* Base Info (Project Card) */}
+            <div class="base-info flex-shrink-0 flex flex-col items-center justify-center px-8" style="width: 100%;">
+              <span class="code-label text-sm font-bold uppercase tracking-widest text-[#bdaa8b] block opacity-0 overflow-hidden transition-all duration-300" style="height: 0; margin-bottom: 0;">Code</span>
+              <div class="card-content flex items-center gap-5 w-full">
+                <div class="text-3xl p-3 flex-shrink-0">
+                  {project.icon}
+                </div>
+                
+                <div class="text-col flex-1 min-w-0" style="height: 72px;">
+                  <h2 class="text-lg font-serif font-bold text-slate-900 leading-tight">
+                    {project.name}
+                  </h2>
+                  <div class="w-12 h-[1.5px] bg-[#bdaa8b] my-2"></div>
+                  <p class="text-slate-600 text-sm font-mono mt-1 line-clamp-2">
+                    {project.description}
+                  </p>
+                  <a href={project.url} target="_blank" class="repo-link inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-blue-600 hover:text-blue-800 transition-all duration-300 opacity-0" style="height: 0; margin-top: 0; overflow: hidden;">
+                    Explore Repository 
+                    <span class="ml-1.5 group-hover:translate-x-1 transition-transform">→</span>
+                  </a>
+                </div>
+              </div>
+              <p class="summary-text text-slate-500 font-mono text-[11px] leading-relaxed opacity-0 overflow-hidden transition-all duration-300" style="height: 0; margin-top: 0;">
+                {project.summary}
+              </p>
+            </div>
+
+            {/* Gradient bridge between blue and green */}
+            <div class="expanded-gradient flex-shrink-0 opacity-0 transition-opacity duration-200" style={`width: 32px; min-width: 32px; background: linear-gradient(to ${isLeft ? 'right' : 'left'}, #d6e8ed, #e8f5e4);`}></div>
+
+            {/* Expanded Info - Notes */}
+            <div class={`expanded-panel flex-1 min-w-0 flex flex-col bg-[#e8f5e4] opacity-0 transition-opacity duration-200 ${isLeft ? 'rounded-r-2xl' : 'rounded-l-2xl'}`}>
+
+              <div class="px-6 pt-6 pb-5 flex-1">
+                <span class="text-sm font-bold uppercase tracking-widest text-[#bdaa8b] mb-4 block">Articles</span>
+
+                <div class="flex flex-col gap-3">
+                {project.articles.length > 0 ? (
+                    project.articles.map((article) => (
+                    <div class="group/article flex flex-col border-t border-slate-300/50 pt-3">
+                        <span class="font-mono text-[10px] text-slate-400 mb-0.5">{article.date}</span>
+                        <a href={article.url} class="text-sm font-bold text-slate-900 group-hover/article:text-blue-600 transition-colors mb-0.5">
+                        {article.title}
+                        </a>
+                        <p class="text-slate-500 text-xs">
+                        {article.description}
+                        </p>
+                    </div>
+                    ))
+                ) : (
+                    <div class="border-t border-slate-300/50 pt-4">
+                    <p class="text-slate-400 font-mono text-xs italic tracking-wide">
+                        In progress...
+                    </p>
+                    </div>
+                )}
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+<script>
+  const cards = document.querySelectorAll('.research-card');
+  const backdrop = document.getElementById('card-backdrop');
+
+  // Cloud poof particle spawner — particles originate from across the card surface
+  function spawnPoof(rect: DOMRect) {
+    const count = 12;
+
+    for (let i = 0; i < count; i++) {
+      const blob = document.createElement('div');
+      const size = 35 + Math.random() * 50;
+
+      // Pick a random point on/near the card surface
+      const originX = rect.left + Math.random() * rect.width;
+      const originY = rect.top + Math.random() * rect.height;
+
+      // Drift gently outward from that point
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const angle = Math.atan2(originY - cy, originX - cx) + (Math.random() - 0.5) * 1.0;
+      const dist = 25 + Math.random() * 55;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist;
+      const duration = 700 + Math.random() * 500;
+
+      Object.assign(blob.style, {
+        position: 'fixed',
+        left: originX + 'px',
+        top: originY + 'px',
+        width: size + 'px',
+        height: size + 'px',
+        marginLeft: -(size / 2) + 'px',
+        marginTop: -(size / 2) + 'px',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(214,232,237,0.9) 0%, rgba(232,245,228,0.6) 50%, rgba(255,255,255,0) 100%)',
+        pointerEvents: 'none',
+        zIndex: '100',
+        opacity: '0.6',
+        transform: 'scale(0.5)',
+        transition: `all ${duration}ms cubic-bezier(0.2, 0.8, 0.3, 1)`,
+      });
+
+      document.body.appendChild(blob);
+
+      // Trigger the burst animation on the next frame
+      requestAnimationFrame(() => {
+        blob.style.transform = `translate(${dx}px, ${dy}px) scale(${1.0 + Math.random() * 0.4})`;
+        blob.style.opacity = '0';
+      });
+
+      // Cleanup
+      setTimeout(() => blob.remove(), duration + 50);
+    }
+  }
+
+  cards.forEach((card) => {
+    const inner = card.querySelector('.card-inner') as HTMLElement;
+    const baseInfo = card.querySelector('.base-info') as HTMLElement;
+    if (!inner || !baseInfo) return;
+
+    const originalWidth = (card as HTMLElement).offsetWidth;
+    const codeLabel = card.querySelector('.code-label') as HTMLElement;
+    const summaryText = card.querySelector('.summary-text') as HTMLElement;
+    const repoLink = card.querySelector('.repo-link') as HTMLElement;
+    const textCol = card.querySelector('.text-col') as HTMLElement;
+    const expandedPanel = card.querySelector('.expanded-panel') as HTMLElement;
+    const expandedGradient = card.querySelector('.expanded-gradient') as HTMLElement;
+    let isExpanded = false;
+
+    card.addEventListener('mouseenter', () => {
+      isExpanded = true;
+      if (backdrop) {
+        backdrop.style.backgroundColor = 'rgba(0,0,0,0.15)';
+      }
+      (card as HTMLElement).style.zIndex = '40';
+      baseInfo.style.width = originalWidth + 'px';
+      baseInfo.style.minWidth = originalWidth + 'px';
+      if (codeLabel) {
+        codeLabel.style.opacity = '1';
+        codeLabel.style.height = '20px';
+        codeLabel.style.marginBottom = '20px';
+      }
+      if (summaryText) {
+        summaryText.style.opacity = '1';
+        summaryText.style.height = 'auto';
+        summaryText.style.marginTop = '32px';
+      }
+      if (repoLink) {
+        repoLink.style.opacity = '1';
+        repoLink.style.height = 'auto';
+        repoLink.style.marginTop = '12px';
+        repoLink.style.overflow = 'visible';
+      }
+      baseInfo.style.justifyContent = 'flex-start';
+      baseInfo.style.alignItems = 'stretch';
+      baseInfo.style.paddingTop = '24px';
+      if (textCol) textCol.style.height = 'auto';
+      inner.style.width = 'calc(200% + 1.5rem)';
+      inner.style.height = '480px';
+      inner.style.boxShadow = '0 20px 60px -12px rgba(0,0,0,0.18)';
+      if (expandedPanel) expandedPanel.style.opacity = '1';
+      if (expandedGradient) expandedGradient.style.opacity = '1';
+    });
+
+    card.addEventListener('mouseleave', () => {
+      if (!isExpanded) return;
+      isExpanded = false;
+
+      if (backdrop) {
+        backdrop.style.backgroundColor = 'rgba(0,0,0,0)';
+      }
+
+      // Spawn poof particles
+      const rect = inner.getBoundingClientRect();
+      spawnPoof(rect);
+
+      // Instantly hide expanded content and the card
+      if (expandedPanel) {
+        expandedPanel.style.transition = 'none';
+        expandedPanel.style.opacity = '0';
+      }
+      if (expandedGradient) {
+        expandedGradient.style.transition = 'none';
+        expandedGradient.style.opacity = '0';
+      }
+      inner.style.transition = 'none';
+      inner.style.visibility = 'hidden';
+
+      // Snap all dimensions to collapsed
+      inner.style.width = '100%';
+      inner.style.height = '130px';
+      inner.style.boxShadow = 'none';
+
+      (card as HTMLElement).style.zIndex = '10';
+      baseInfo.style.width = '100%';
+      baseInfo.style.minWidth = '0';
+      baseInfo.style.justifyContent = 'center';
+      baseInfo.style.alignItems = 'center';
+      baseInfo.style.paddingTop = '';
+      if (textCol) textCol.style.height = '72px';
+
+      if (codeLabel) {
+        codeLabel.style.transition = 'none';
+        codeLabel.style.opacity = '0';
+        codeLabel.style.height = '0';
+        codeLabel.style.marginBottom = '0';
+      }
+      if (summaryText) {
+        summaryText.style.transition = 'none';
+        summaryText.style.opacity = '0';
+        summaryText.style.height = '0';
+        summaryText.style.marginTop = '0';
+      }
+      if (repoLink) {
+        repoLink.style.transition = 'none';
+        repoLink.style.opacity = '0';
+        repoLink.style.height = '0';
+        repoLink.style.marginTop = '0';
+        repoLink.style.overflow = 'hidden';
+      }
+
+      // Show collapsed card on the next frame (after layout has settled)
+      requestAnimationFrame(() => {
+        inner.style.visibility = 'visible';
+        inner.style.transition = 'all 500ms cubic-bezier(0.25, 1, 0.5, 1)';
+        if (codeLabel) codeLabel.style.transition = 'all 300ms ease';
+        if (summaryText) summaryText.style.transition = 'all 300ms ease';
+        if (repoLink) repoLink.style.transition = 'all 300ms ease';
+        if (expandedPanel) expandedPanel.style.transition = 'opacity 200ms ease';
+        if (expandedGradient) expandedGradient.style.transition = 'opacity 200ms ease';
+      });
+    });
+  });
+</script>
