@@ -1,9 +1,25 @@
 ---
 interface Props {
-	title: string;
+	// Astro passes markdown properties inside the 'frontmatter' object
+	frontmatter?: {
+		title: string;
+		date?: string;
+		description?: string;
+		[key: string]: any;
+	};
+	// Fallbacks in case the layout is used as a standard component
+	title?: string;
+	date?: string;
+	description?: string;
 }
 
-const { title } = Astro.props;
+const { frontmatter, ...props } = Astro.props;
+
+// Safely grab the variables whether passed via markdown frontmatter or direct props
+const title = frontmatter?.title || props.title;
+const date = frontmatter?.date || props.date;
+const description = frontmatter?.description || props.description;
+
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -32,20 +48,29 @@ const base = import.meta.env.BASE_URL;
 						<div id="paper-2" class="absolute w-full h-[1px] bg-slate-500" style="transform: translateY(-40px); opacity: 0;"></div>
 					</div>
 
-					<a href=`${base}/` class="font-black tracking-tighter text-xl uppercase text-slate-800">STACKIN PAPER</a>
+					<a href=`${base}/` class="text-xl md:text-3xl font-serif italic tracking-tight text-[#bdaa8b]">Stackin Paper</a>
 				</div>
 
-				<div class="flex gap-8 font-mono text-sm font-bold uppercase text-slate-600">
-					<a href=`${base}/researchlog` class="hover:text-blue-600 transition-colors">/log</a>
-					<a href=`${base}/articles` class="hover:text-blue-600 transition-colors">/articles</a>
+				<div class="flex gap-8 font-mono text-m font-bold uppercase text-[#bdaa8b]">
+					<a href=`${base}/researchlog` class="hover:text-blue-600 transition-colors">/logs</a>
 				</div>
 			</div>
 		</nav>
 
 		<main class="max-w-3xl mx-auto px-6 py-12">
-			<article class="prose prose-slate max-w-3xl mx-auto prose-h1:text-[#bdaa8b]">
-                <slot />
-            </article>
+    
+			<header class="mb-8 pb-6 border-b border-slate-200/60">
+				{date && <time class="block mb-2 text-sm font-mono text-slate-500">{date}</time>}
+				
+				<h1 class="mb-3 text-3xl sm:text-4xl font-bold text-[#bdaa8b]">{title}</h1>
+				
+				{description && <p class="text-base text-slate-600 leading-relaxed">{description}</p>}
+			</header>
+
+			<article class="prose prose-slate max-w-3xl mx-auto prose-headings:text-black [&>*:first-child]:!mt-0">
+				<slot />
+			</article>
+
 		</main>
 
 		<script>

@@ -22,13 +22,13 @@ const projects = researchData.map(project => ({
 <div id="card-backdrop" class="fixed inset-0 bg-black/0 pointer-events-none transition-colors duration-300 z-30"></div>
 
 <div class="max-w-4xl mx-auto px-6 pt-12 pb-[28rem]">
-  <h1 class="text-4xl md:text-5xl text-[#bdaa8b] tracking-tight font-serif mb-3">
+  <h1 class="text-4xl md:text-5xl text-[#bdaa8b] tracking-tight font-serif italic mb-3">
     Research Log
   </h1>
   <p class="font-mono text-sm text-slate-500 mb-6 leading-relaxed">Ongoing projects & their respective implementation notes, architecture decisions, and empirical findings from training and deployment.</p>
   <div class="w-full h-[1px] bg-gray-300 mb-6"></div>
 
-  <div class="flex items-center justify-center gap-6 font-mono text-xs text-slate-400 mb-8">
+  <div class="flex items-center justify-center gap-6 font-mono text-xs text-slate-500 mb-8">
     <span class="flex items-center gap-1.5">🌱 <span>implementation stage</span></span>
     <span class="flex items-center gap-1.5">🌿 <span>training in progress</span></span>
     <span class="flex items-center gap-1.5">🌳 <span>evaluating results & writing up analysis</span></span>
@@ -70,7 +70,7 @@ const projects = researchData.map(project => ({
                   </a>
                 </div>
               </div>
-              <p class="summary-text text-slate-500 font-mono text-[11px] leading-relaxed opacity-0 overflow-hidden transition-all duration-300" style="height: 0; margin-top: 0;">
+              <p class="summary-text text-slate-500 font-mono text-[13px] leading-relaxed opacity-0 overflow-hidden transition-all duration-300" style="height: 0; margin-top: 0;">
                 {project.summary}
               </p>
             </div>

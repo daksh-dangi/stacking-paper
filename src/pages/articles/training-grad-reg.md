@@ -6,8 +6,6 @@ description: "Discussing hurdles during training, and displaying results"
 project: "grpo"
 tags: ["Training", "trl"]
 ---
-# Using Gradient Regularization to Train Qwen-4B
-
 ## Beginning Training
 I wanted to approach the actual training part of this project in 2 steps. I am well aware that libraries such as trl exist for the sole purpose of optimizing every aspect of training runs. However, I felt like taking a hands-on approach would allow me to learn *even more* about what changes might be required to speed up training, and, more importantly, what *necessitates* these changes. For this reason, I opted to try running my training script bare-bones, built on just a custom PyTorch class; and then graduate to a custom instance of the trl GRPOTrainer class to hopefully smooth out all the wrinkles (inefficiencies) from my PyTorch implementation.
 
@@ -50,8 +48,18 @@ To reconcile this difference, I just pass in `vllm_importance_sampling_correctio
 ## Results & Future Steps
 Following these changes, I was **finally** able to observe a stable logging metric ! Determined not to make the same (costly) mistake as last time, I watched the training process steadily over the next couple of hours. Once I was satisfied that I had covered all the possible scenarios I could think of, I left it to run over the next 48 hours. Overall, the entire process of training the GradReg implementation and the baseline GRPO + all of the intermediate troubleshooting took ~ 1.5 weeks, and ~800$ of compute on 2x H200-SXM's.
 
-The training results seemed to be very positive. Across 3 trials on the GPQA Diamond dataset, the Gradient Regularized GRPO averaged 64.31%, while the baseline GRPO averaged 62.46% - almost a 2% increase ! I plan to delve deeper into the results by plotting the logging metrics, and testing the model's stability + plasticity by checking to see if it's retained knowledge from other domains. 
-
 More importantly, I will use this opportunity to try to get a taste of mechanistic interpretability ! It's a field that has fascinated me for a while, and I think this is the perfect scenario for me to give it a whirl. I will be able to (hopefully) get a clearer understanding of what exactly has been updated in the underlying circuits, and also attempt to see if the original Gradient Regularization paper's claims of generalizability hold. 
 
 This is probably easier said than done, but I find having a concrete objective when going into new fields allows you to focus your attention on specifics, rather than getting confused and lost by the breadth that the topic has to offer. In this scenario, I know what exactly I want to understand about the circuits, it's up to me to figure out how to extend the methodologies that I learn about to satiate my thirst for answers !
+
+Now, onto the results - Gradient Regularization did not appear to harm the model's ability to learn, as both the reward and loss curves appeared to follow pretty much the same trend; and neither faced policy collapse as the entropy seemed stable for both runs. The only apparent distinction I could make is that the GradReg implmentation seemed to prefer longer output lengths during the start of the training; but they both seemed to peter out to similar lengths towards the end of the training run as shown below.
+![VisualizinglLogging metrics from GradReg training run](../images/length_comparison_smooth.png)
+
+As for the actual results, the performance for all the models are shown below, averaged across 3 trials. All were done with the same generation configs - 20,000 max tokens and 0.0 temp, no sampling. Notably the GradReg trained model seems to outperform the rest, but not by much. 
+
+### Benchmark Results
+| Model         | Category     | Avg Accuracy   | Std Dev   | Trial 1   | Trial 2   | Trial 3   |
+|:--------------|:-------------|:---------------|:----------|:----------|:----------|:----------|
+| gradReg       | diamond_gpqa | 65.32%         | 1.05%     | 65.66%    | 66.16%    | 64.14%    |
+| base          | diamond_gpqa | 64.31%         | 2.04%     | 64.65%    | 66.16%    | 62.12%    |
+| grpo          | diamond_gpqa | 64.14%         | 2.02%     | 66.16%    | 64.14%    | 62.12%    |
